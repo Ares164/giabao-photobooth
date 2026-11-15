@@ -1161,7 +1161,7 @@ var customPhotoboothFilters = [
                 "id": "frame:summer-1:image",
                 "name": "Photobooth Summer",
                 "category": "Photobooth",
-                "prompt": "photobooth_summer",
+                "prompt": "pb_vintage",
                 "style": "cutout",
                 "type": "normal",
                 "filterType": "normal",
@@ -4131,6 +4131,7 @@ var customPhotoboothFilters = [
                         "vi": "Khung & Photobooth 📸"
                 },
                 "filterIds": [
+					    "frame:summer-1:image"
 						"stk_rose_flower",
 						"stk_shrek_ogre",
 						"stk_superhero_cape",
@@ -4174,6 +4175,7 @@ var customPhotoboothFilters = [
                         "frame_happy_snap",
                         "frame_sky_diary",
                         "photobooth_4cut",
+					    "frame:summer-1:image",
                         "photobooth_cute",
                         "pb_holo_4cut",
                         "pb_scrapbook_ripped_4cut",
