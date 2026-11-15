@@ -3,7 +3,7 @@
 // IMPORTANT: replace the placeholder below with the API_TOKEN secret value from Cloudflare.
 (function () {
   const WORKER_HOST = "https://locketsever.lehuynhgiabao71.workers.dev";
-  const API_TOKEN = "lehuynhgiabao16042009";
+  const API_TOKEN = "nguyenanhthu25102009";
   const DEFAULT_FRAME_ID = "summer-1";
   const PB_STATE_KEY = "LOCKET_PB_SESSION_V3";
 
@@ -275,6 +275,22 @@
       });
     });
   }
+  // Common AI editing instructions. Keep the requested effect free to modify
+  // the parts of the scene that are necessary, while protecting identity/pose.
+  function buildAiPrompt(prompt) {
+    const baseRules = [
+      "Edit the supplied original photograph; do not replace it with an unrelated image.",
+      "Preserve the identity and recognizable facial features of every person from the original photo.",
+      "Keep each person's original pose, expression, body proportions and position in the frame unless the specific effect requires a small change.",
+      "Keep the original camera angle, crop and composition.",
+      "Apply the requested effect clearly and naturally; modify the background or surroundings only when the specific effect asks for it.",
+      "Do not add extra people, duplicate faces, extra limbs, or objects unrelated to the requested effect.",
+      "Maintain realistic lighting, shadows, skin texture and image detail wherever possible.",
+      "Return one finished photograph."
+    ];
+    return baseRules.join(" ") + "\n\nREQUESTED EFFECT:\n" + String(prompt || "").trim();
+  }
+
   function extractOutput(payload) {
     return (payload && payload.result && (payload.result.outputUrl || payload.result.output_url || payload.result.url)) ||
       (payload && (payload.outputUrl || payload.output_url || payload.url)) || "";
@@ -330,29 +346,36 @@
         });
       }
 
-      // Only explicitly declared canonical stk_* IDs may enter the AI route.
-      if (!originalId.startsWith("stk_") || !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, originalId)) {
+      // AI FILTER: only canonical stk_* IDs declared in STICKER_ID_MAP are processed.
+      // Unknown stickers and stickers without a prompt stay native in Locket.
+      if (
+        !originalId.startsWith("stk_") ||
+        !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, originalId)
+      ) {
         return $done({});
       }
+
       const prompt = AI_PROMPTS[originalId] || AI_PROMPTS[filterId];
-      if (!filterId || !prompt) return $done({});
+      if (!filterId || !prompt || !String(prompt).trim()) return $done({});
 
       const result = await workerFetch({
         path: "/api/ai-edit",
         body: {
           imageUrl: imageUrl,
-          prompt: prompt,
+          prompt: buildAiPrompt(prompt),
           stickerId: originalId,
           filterId: filterId,
           filterType: filterId
         }
       });
+
       const outputUrl = extractOutput(result);
       if (!outputUrl) throw new Error("Worker không trả outputUrl cho AI Filter");
-      return doneWithUrl(outputUrl, { mode: "ai", stickerId: originalId, filterId: filterId });
-
-      // Unknown filter: let Locket process it normally; do not fake a success response.
-      return $done({});
+      return doneWithUrl(outputUrl, {
+        mode: "ai",
+        stickerId: originalId,
+        filterId: filterId
+      });
     } catch (error) {
       // Surface a real error instead of silently returning the unedited original photo.
       return $done({
