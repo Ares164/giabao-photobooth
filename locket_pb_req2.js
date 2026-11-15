@@ -198,7 +198,7 @@
 }
 
   const PHOTOBOOTH_IDS = [
-    "photobooth", "photobooth_4cut", "photobooth_cute", "pb_strawberry",
+    "photobooth", "photobooth_4cut", "photobooth_cute", "photobooth_summer",
     "pb_vintage", "pb_galaxy", "pb_holo_4cut", "pb_scrapbook_ripped_4cut",
     "pb_ripped_paper_4cut", "pb_denim_ripped_2x2", "frame_classic_pb",
     "frame_berry_days", "frame_happy_snap", "frame_sky_diary"
