@@ -14,7 +14,7 @@
     5. [FIX] Xử lý đúng response generateFilteredImage (AI Filters hoạt động).
 ***********************************************/
 
-const WORKER_HOST = "https://locket-vip.mhiep20077.workers.dev";
+const WORKER_HOST = "https://locketsever.lehuynhgiabao71.workers.dev/";
 const VIP_STORE_KEY = "LOCKET_VIP_COMMUNITY";
 const SELF_UID_KEY = "LOCKET_SELF_UID";
 const SELF_USERNAME_KEY = "LOCKET_SELF_USERNAME";
