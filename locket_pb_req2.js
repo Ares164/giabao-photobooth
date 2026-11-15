@@ -3,122 +3,68 @@
 // IMPORTANT: replace the placeholder below with the API_TOKEN secret value from Cloudflare.
 (function () {
   const WORKER_HOST = "https://locketsever.lehuynhgiabao71.workers.dev";
-  const API_TOKEN = "lehuynhgiabao16042009";
+  const API_TOKEN = "PASTE_YOUR_API_TOKEN_HERE";
   const DEFAULT_FRAME_ID = "summer-1";
   const PB_STATE_KEY = "LOCKET_PB_SESSION_V3";
 
   const STICKER_ID_MAP = {
 		"stk_rose_flower": "rose_flower",
-		"rose_flower": "rose_flower",
 		"stk_shrek_ogre": "shrek_ogre",
-		"shrek_ogre": "shrek_ogre",
 		"stk_superhero_cape": "superhero_cape",
-		"superhero_cape": "superhero_cape",
 		"stk_spooky_ghost": "spooky_ghost",
-		"spooky_ghost": "spooky_ghost",
 		"stk_pirate_hat": "pirate_hat",
-		"pirate_hat": "pirate_hat",
 		"stk_volcano_lava": "volcano_lava",
-		"volcano_lava": "volcano_lava",
 		"stk_rain_storm": "rain_storm",
-		"rain_storm": "rain_storm",
 		"stk_fortnite_llama": "fortnite_llama",
-		"fortnite_llama": "fortnite_llama",
 		"stk_watercolor_art": "watercolor_art",
-		"watercolor_art": "watercolor_art",
 		"stk_golden_hour": "golden_hour",
-		"golden_hour": "golden_hour",
 		"stk_jungle_leaf": "jungle_leaf",
-		"jungle_leaf": "jungle_leaf",
 		"stk_cute_zombie": "cute_zombie",
-		"cute_zombie": "cute_zombie",
 		"stk_fireworks": "fireworks",
-		"fireworks": "fireworks",
 		"stk_new_year_2026": "new_year_2026",
-		"new_year_2026": "new_year_2026",
 		"stk_harry_potter": "harry_potter",
-		"harry_potter": "harry_potter",
 		"stk_minecraft": "minecraft",
-		"minecraft": "minecraft",
 		"stk_fire_flame": "fire_flame",
-		"fire_flame": "fire_flame",
 		"stk_giant_spider": "giant_spider",
-		"giant_spider": "giant_spider",
 		"stk_ocean_underwater": "ocean_underwater",
-		"ocean_underwater": "ocean_underwater",
 		"stk_ufo_alien": "ufo_alien",
-		"ufo_alien": "ufo_alien",
         "stk_dio_disco": "disco_lights",
-        "disco": "disco_lights",
         "stk_dio_pm2": "locket",
         "stk_dio_cash": "cash_money",
-        "cash": "cash_money",
         "stk_dio_wedding": "wedding",
-        "wedding": "wedding",
         "stk_dio_cowboy": "cowboy_cowgirl",
-        "cowboy": "cowboy_cowgirl",
         "stk_dio_looksmaxing": "looks_maxxing",
-        "looksmaxing": "looks_maxxing",
         "stk_dio_orange_wig": "okay_wig",
-        "orange_wig": "okay_wig",
         "stk_dio_bleached_hair": "blonde_bleached",
-        "bleached_hair": "blonde_bleached",
         "stk_dio_bob": "bob_cut",
-        "bob": "bob_cut",
         "stk_dio_bearded": "beard",
-        "bearded": "beard",
         "stk_dio_bearded_holiday": "bearded",
         "stk_dio_sweat_hearts": "sweet_hearts",
-        "sweat_hearts": "sweet_hearts",
         "stk_dio_elf": "elf_cutout",
-        "elf": "elf_cutout",
         "stk_dio_santa": "santa_cutout",
-        "santa": "santa_cutout",
         "stk_dio_easter_bunny": "easter_bunney_cutout",
-        "easter_bunny": "easter_bunney_cutout",
         "stk_dio_easter_chick": "easter_chick_cutout",
-        "easter_chick": "easter_chick_cutout",
         "stk_dio_toothless": "toothless",
-        "toothless": "toothless",
         "stk_dio_bye_brows": "bye_brows",
-        "bye_brows": "bye_brows",
         "stk_dio_bowling_ball": "bowling_ball",
-        "bowling_ball": "bowling_ball",
         "stk_dio_buns": "buns",
-        "buns": "buns",
         "stk_dio_tatted": "tatted",
-        "tatted": "tatted",
         "stk_dio_mohawk": "mohawk",
-        "mohawk": "mohawk",
         "stk_dio_braces": "braces",
-        "braces": "braces",
         "stk_dio_slimed": "slimed",
-        "slimed": "slimed",
         "stk_dio_princess": "princess",
-        "princess": "princess",
         "stk_dio_happy_birthday": "happy_birthday",
-        "happy_birthday": "happy_birthday",
         "stk_dio_cutesy": "cutesy",
-        "cutesy": "cutesy",
         "stk_dio_sticker_face": "sticker_face",
-        "sticker_face": "sticker_face",
         "stk_dio_flower_crown": "flower_crown",
-        "flower_crown": "flower_crown",
         "stk_dio_love_bug": "love_bug",
-        "love_bug": "love_bug",
         "stk_dio_giraffe": "giraffe",
-        "giraffe": "giraffe",
         "stk_dio_clown": "clown",
-        "clown": "clown",
         "stk_dio_leprechaun": "leprechaun",
-        "leprechaun": "leprechaun",
         "stk_dio_lucky_face": "lucky_face",
-        "lucky_face": "lucky_face",
         "stk_dio_frosty": "frosty",
-        "frosty": "frosty",
         "stk_dio_influencer": "influencer",
-        "influencer": "influencer"
-    }
+  }
 
   const AI_PROMPTS = {
 	"rose_flower": "Show the person in the photo with the exact same pose and background, but have them with a single rose in their mouth. If no person is present in the input, do not add anything to the output.",
@@ -197,10 +143,17 @@
     "frame_classic_pb": "Show the persons in the photo with the exact same pose and background, captured with classic black and white film photobooth aesthetic, dramatic soft lighting, 8k resolution, modern iPhone camera look."
 }
 
-  const PHOTOBOOTH_IDS = [
+  // Photobooth mode IDs are NOT AI sticker IDs. Match exact IDs only.
+  const PHOTOBOOTH_MODE_IDS = [
     "photobooth", "photobooth_4cut", "photobooth_cute", "photobooth_summer",
-    "pb_vintage", "pb_galaxy", "pb_holo_4cut", "pb_scrapbook_ripped_4cut",
-    "pb_ripped_paper_4cut", "pb_denim_ripped_2x2", "frame_classic_pb",
+    "pb_strawberry", "pb_vintage", "pb_galaxy", "pb_holo_4cut",
+    "pb_scrapbook_ripped_4cut", "pb_ripped_paper_4cut", "pb_denim_ripped_2x2",
+    "frame_classic_pb"
+  ];
+
+  // Frame IDs are separate from sticker IDs. They must match the IDs uploaded to Worker KV.
+  const PHOTOBOOTH_FRAME_IDS = [
+    "summer-1", "frame-berry-days", "frame-happy-snap", "frame-sky-diary",
     "frame_berry_days", "frame_happy_snap", "frame_sky_diary"
   ];
 
@@ -230,27 +183,21 @@
       }
     });
   }
-  function getNestedValue(obj, names, depth = 0) {
-  if (!obj || typeof obj !== "object" || depth > 7) return "";
-
-  for (const name of names) {
-    const value = obj[name];
-    if (typeof value === "string" && value.trim()) {
-      return value.trim();
+  function getNestedValue(obj, names, depth) {
+    if (!obj || typeof obj !== "object" || depth > 7) return "";
+    for (const name of names) {
+      const value = obj[name];
+      if (typeof value === "string" && value.trim()) return value.trim();
     }
-  }
-
-  for (const key of Object.keys(obj)) {
-    const value = obj[key];
-
-    if (value && typeof value === "object") {
-      const found = getNestedValue(value, names, depth + 1);
-      if (found) return found;
+    for (const key of Object.keys(obj)) {
+      const value = obj[key];
+      if (value && typeof value === "object") {
+        const found = getNestedValue(value, names, depth + 1);
+        if (found) return found;
+      }
     }
+    return "";
   }
-
-  return "";
-}
   function parseBody(raw) {
     if (!raw) return {};
     if (typeof raw === "object") return raw;
@@ -274,13 +221,26 @@
     ], 0).toLowerCase();
   }
   function normaliseFilter(id) {
-    if (!id) return "";
-    return STICKER_ID_MAP[id] || id.replace(/^stk_/, "");
+    // Only canonical Locket sticker IDs are accepted by the AI route.
+    if (!id || !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, id)) return "";
+    return STICKER_ID_MAP[id];
   }
   function isPhotobooth(id) {
-    const value = String(id || "").toLowerCase();
-    if (value.startsWith("pb_single_") || value.startsWith("khung_")) return false;
-    return PHOTOBOOTH_IDS.some(item => value === item || value.includes(item)) || /photoboot|4cut/i.test(value);
+    const value = String(id || "").trim().toLowerCase();
+    return PHOTOBOOTH_MODE_IDS.indexOf(value) !== -1 || PHOTOBOOTH_FRAME_IDS.indexOf(value) !== -1;
+  }
+  function getPhotoboothFrameId(body, detectedId) {
+    const explicit = getNestedValue(body, ["frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"], 0).toLowerCase();
+    if (explicit && !explicit.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(explicit)) return explicit;
+    // Some clients place the selected frame in templateId. Never treat a sticker ID as a frame.
+    const template = getNestedValue(body, ["templateId", "template_id"], 0).toLowerCase();
+    if (template && !template.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(template)) return template;
+    if (PHOTOBOOTH_FRAME_IDS.indexOf(detectedId) !== -1) return detectedId;
+    return DEFAULT_FRAME_ID;
+  }
+  function hasExplicitPhotoboothFrame(body) {
+    const candidate = getNestedValue(body, ["frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"], 0).toLowerCase();
+    return !!candidate && !candidate.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(candidate);
   }
   function workerFetch(payload) {
     if (API_TOKEN === "PASTE_YOUR_API_TOKEN_HERE") {
@@ -331,13 +291,19 @@
 
       if (!imageUrl) return $done({});
 
-      // Photobooth is a frame-compositing flow. It never invokes AI.
-      if (isPhotobooth(originalId) || isPhotobooth(filterId)) {
+      // PHOTObooth branch is checked first and never calls AI.
+      if (isPhotobooth(originalId) || hasExplicitPhotoboothFrame(body)) {
         let state = {};
         try { state = JSON.parse(readStore(PB_STATE_KEY) || "{}"); } catch (_) { state = {}; }
+        const now = Date.now();
+        // Worker session TTL is 15 minutes; reset local progress after the same interval.
+        if (!state.updatedAt || now - Number(state.updatedAt) > 15 * 60 * 1000) state = {};
         let step = Number(state.step || 1);
-        let sessionId = state.sessionId || "";
-        const frameId = state.frameId || DEFAULT_FRAME_ID;
+        let sessionId = String(state.sessionId || "");
+        const selectedFrameId = getPhotoboothFrameId(body, originalId);
+        const frameId = state.frameId || selectedFrameId || DEFAULT_FRAME_ID;
+        // Changing frames starts a new four-shot session.
+        if (state.frameId && state.frameId !== selectedFrameId) { step = 1; sessionId = ""; }
         if (step < 1 || step > 4) { step = 1; sessionId = ""; }
 
         const workerBody = { step: step, frameId: frameId, imageUrl: imageUrl };
@@ -345,43 +311,45 @@
         const result = await workerFetch({ path: "/api/photobooth/capture", body: workerBody });
         const outputUrl = extractOutput(result);
         if (!outputUrl) throw new Error("Worker không trả outputUrl cho Photobooth");
+        const returnedSessionId = result.sessionId || (result.result && result.result.sessionId) || sessionId;
 
         if (step < 4) {
           writeStore(PB_STATE_KEY, JSON.stringify({
-            sessionId: result.sessionId,
+            sessionId: returnedSessionId,
             step: step + 1,
             frameId: frameId,
             photoboothId: originalId,
-            updatedAt: Date.now()
+            updatedAt: now
           }));
         } else {
           writeStore(PB_STATE_KEY, "");
         }
         return doneWithUrl(outputUrl, {
-          mode: "photobooth", step: step, completed: step === 4,
-          sessionId: result.sessionId || sessionId
+          mode: "photobooth", frameId: frameId, step: step, completed: step === 4,
+          sessionId: returnedSessionId
         });
       }
 
-      // AI filters keep the complete original prompt dictionary and sticker-id aliases.
-      const promptKey = String(
-  getNestedValue(body, ["prompt"]) || ""
-).trim();
-
-const prompt =
-  AI_PROMPTS[promptKey] ||
-  AI_PROMPTS[originalId] ||
-  AI_PROMPTS[filterId] ||
-  AI_PROMPTS[normaliseFilter(originalId)];
-      if (prompt) {
-        const result = await workerFetch({
-          path: "/api/ai-edit",
-          body: { imageUrl: imageUrl, prompt: prompt, stickerId: originalId, filterId: filterId }
-        });
-        const outputUrl = extractOutput(result);
-        if (!outputUrl) throw new Error("Worker không trả outputUrl cho AI Filter");
-        return doneWithUrl(outputUrl, { mode: "ai", stickerId: originalId, filterId: filterId });
+      // Only explicitly declared canonical stk_* IDs may enter the AI route.
+      if (!originalId.startsWith("stk_") || !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, originalId)) {
+        return $done({});
       }
+      const prompt = AI_PROMPTS[originalId] || AI_PROMPTS[filterId];
+      if (!filterId || !prompt) return $done({});
+
+      const result = await workerFetch({
+        path: "/api/ai-edit",
+        body: {
+          imageUrl: imageUrl,
+          prompt: prompt,
+          stickerId: originalId,
+          filterId: filterId,
+          filterType: filterId
+        }
+      });
+      const outputUrl = extractOutput(result);
+      if (!outputUrl) throw new Error("Worker không trả outputUrl cho AI Filter");
+      return doneWithUrl(outputUrl, { mode: "ai", stickerId: originalId, filterId: filterId });
 
       // Unknown filter: let Locket process it normally; do not fake a success response.
       return $done({});
@@ -397,3 +365,4 @@ const prompt =
     }
   })();
 })();
+
