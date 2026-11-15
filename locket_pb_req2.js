@@ -230,21 +230,27 @@
       }
     });
   }
-  function getNestedValue(obj, names, depth) {
-    if (!obj || typeof obj !== "object" || depth > 7) return "";
-    for (const name of names) {
-      const value = obj[name];
-      if (typeof value === "string" && value.trim()) return value.trim();
+  function getNestedValue(obj, names, depth = 0) {
+  if (!obj || typeof obj !== "object" || depth > 7) return "";
+
+  for (const name of names) {
+    const value = obj[name];
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
     }
-    for (const key of Object.keys(obj)) {
-      const value = obj[key];
-      if (value && typeof value === "object") {
-        const found = getNestedValue(value, names, depth + 1);
-        if (found) return found;
-      }
-    }
-    return "";
   }
+
+  for (const key of Object.keys(obj)) {
+    const value = obj[key];
+
+    if (value && typeof value === "object") {
+      const found = getNestedValue(value, names, depth + 1);
+      if (found) return found;
+    }
+  }
+
+  return "";
+}
   function parseBody(raw) {
     if (!raw) return {};
     if (typeof raw === "object") return raw;
