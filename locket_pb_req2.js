@@ -3,7 +3,7 @@
 // IMPORTANT: replace the placeholder below with the API_TOKEN secret value from Cloudflare.
 (function () {
   const WORKER_HOST = "https://locketsever.lehuynhgiabao71.workers.dev";
-  const API_TOKEN = "PASTE_YOUR_API_TOKEN_HERE";
+  const API_TOKEN = "lehuynhgiabao16042009";
   const DEFAULT_FRAME_ID = "summer-1";
   const PB_STATE_KEY = "LOCKET_PB_SESSION_V3";
 
