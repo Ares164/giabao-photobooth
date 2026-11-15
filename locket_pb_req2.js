@@ -358,7 +358,15 @@
       }
 
       // AI filters keep the complete original prompt dictionary and sticker-id aliases.
-      const prompt = AI_PROMPTS[originalId] || AI_PROMPTS[filterId] || AI_PROMPTS[normaliseFilter(originalId)];
+      const promptKey = String(
+  getNestedValue(body, ["prompt"]) || ""
+).trim();
+
+const prompt =
+  AI_PROMPTS[promptKey] ||
+  AI_PROMPTS[originalId] ||
+  AI_PROMPTS[filterId] ||
+  AI_PROMPTS[normaliseFilter(originalId)];
       if (prompt) {
         const result = await workerFetch({
           path: "/api/ai-edit",
