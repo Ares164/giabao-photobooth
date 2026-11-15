@@ -1205,19 +1205,19 @@ var customPhotoboothFilters = [
                 "try_button_enabled": true
         },
         {
-                "uid": "frame_happy_snap",
-                "id": "frame_happy_snap",
-                "name": "Photobooth Happy Snap",
+                "uid": "summer-1",
+                "id": "summer-1",
+                "name": "photobooth_summer",
                 "category": "Photobooth",
                 "prompt": "pb_vintage",
                 "style": "cutout",
                 "type": "normal",
                 "filterType": "normal",
                 "overlay": true,
-                "imageUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_vintage.png",
-                "iconUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_vintage.png",
-                "overlayImageUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_vintage.png",
-                "overlayImageURL": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_vintage.png",
+                "imageUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                "iconUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                "overlayImageUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                "overlayImageURL": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
                 "tintColor": "#A8E6CF",
                 "colors": [
                         "#A8E6CF",
@@ -1228,9 +1228,9 @@ var customPhotoboothFilters = [
                         "#88D49E"
                 ],
                 "icon": {
-                        "url": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_vintage.png",
-                        "iconUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_vintage.png",
-                        "remoteImage": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_vintage.png",
+                        "url": "",
+                        "iconUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                        "remoteImage": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
                         "sfSymbol": "square.grid.2x2",
                         "symbol": "square.grid.2x2",
                         "emoji": ""
@@ -4131,7 +4131,7 @@ var customPhotoboothFilters = [
                         "vi": "Khung & Photobooth 📸"
                 },
                 "filterIds": [
-					    "frame:summer-1:image"
+					    "summer-1"
 						"stk_rose_flower",
 						"stk_shrek_ogre",
 						"stk_superhero_cape",
@@ -4679,6 +4679,7 @@ var customPhotoboothFilters = [
 
     var customPickerFilters = [
         "frame_berry_days",
+		"summer-1"
         "frame_happy_snap",
         "frame_sky_diary",
         "photobooth_4cut",
