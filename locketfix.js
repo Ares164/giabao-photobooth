@@ -1588,6 +1588,32 @@ var customPhotoboothFilters = [
                 "tryButtonEnabled": true,
                 "try_button_enabled": true
         },
+	    {
+  "uid": "photobooth_summer",
+  "id": "photobooth_summer",
+  "name": "Photobooth Summer 4 ô",
+  "category": "Photobooth",
+  "prompt": "photobooth_summer",
+  "style": "cutout",
+  "type": "normal",
+  "filterType": "normal",
+  "overlay": true,
+  "imageUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+  "iconUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+  "overlayImageUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+  "overlayImageURL": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+  "tintColor": "#38BDF8",
+  "colors": ["#38BDF8", "#93C5FD"],
+  "captureButtonColors": ["#38BDF8", "#93C5FD"],
+  "icon": {
+    "url": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+    "iconUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+    "remoteImage": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+    "sfSymbol": "square.grid.2x2",
+    "symbol": "square.grid.2x2",
+    "emoji": ""
+  }
+},
         {
                 "uid": "frame_classic_pb",
                 "id": "frame_classic_pb",
