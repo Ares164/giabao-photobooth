@@ -4131,7 +4131,7 @@ var customPhotoboothFilters = [
                         "vi": "Khung & Photobooth 📸"
                 },
                 "filterIds": [
-					    "summer-1"
+					    "summer-1",
 						"stk_rose_flower",
 						"stk_shrek_ogre",
 						"stk_superhero_cape",
@@ -4175,7 +4175,7 @@ var customPhotoboothFilters = [
                         "frame_happy_snap",
                         "frame_sky_diary",
                         "photobooth_4cut",
-					    "frame:summer-1:image",
+					    "summer-1",
                         "photobooth_cute",
                         "pb_holo_4cut",
                         "pb_scrapbook_ripped_4cut",
@@ -4249,6 +4249,7 @@ var customPhotoboothFilters = [
                         "frame_classic_pb",
                         "sticker_b_nh_lu_n_minh_tu",
                         "cmt_locket",
+					    "summer-1",
                         "khung_hello_kitty_pastel_ng_t_ng_o",
                         "khung_hello_kitty_h_ng_pastel",
                         "khung_nh_n_pastel_vi_n_ren",
