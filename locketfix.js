@@ -133,7 +133,7 @@ Object.assign(obj.entries, {
         profile_banner: true
     }),
     feature_discovery_popup_config: JSON.stringify({
-        tag: "LOCKET GOLD HAKAIZ",
+        tag: "LOCKET GOLD GB",
         tag_gradient: true,
         tag_style: "gold_gradient",
         title: "Đã Kich Hoạt 💛",
@@ -1157,19 +1157,19 @@ var customPhotoboothFilters = [
 		"filterType": "normal"
 	},
         {
-                "uid": "frame_berry_days",
-                "id": "frame_berry_days",
-                "name": "Photobooth Berry Days",
+                "uid": "frame:summer-1:image",
+                "id": "frame:summer-1:image",
+                "name": "Photobooth Summer",
                 "category": "Photobooth",
-                "prompt": "pb_strawberry",
+                "prompt": "photobooth_summer",
                 "style": "cutout",
                 "type": "normal",
                 "filterType": "normal",
                 "overlay": true,
-                "imageUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_strawberry.png",
-                "iconUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_strawberry.png",
-                "overlayImageUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_strawberry.png",
-                "overlayImageURL": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_strawberry.png",
+                "imageUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                "iconUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                "overlayImageUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                "overlayImageURL": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
                 "tintColor": "#FFB6C1",
                 "colors": [
                         "#FFB6C1",
@@ -1180,9 +1180,9 @@ var customPhotoboothFilters = [
                         "#FF69B4"
                 ],
                 "icon": {
-                        "url": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_strawberry.png",
-                        "iconUrl": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_strawberry.png",
-                        "remoteImage": "https://locket-vip.mhiep20077.workers.dev/assets/frames/pb_strawberry.png",
+                        "url": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                        "iconUrl": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
+                        "remoteImage": "https://locketsever.lehuynhgiabao71.workers.dev/frames/summer-1.png",
                         "sfSymbol": "square.grid.2x2",
                         "symbol": "square.grid.2x2",
                         "emoji": ""
