@@ -252,7 +252,7 @@
     return !!candidate && !candidate.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(candidate);
   }
   function workerFetch(payload) {
-    if (API_TOKEN === "PASTE_YOUR_API_TOKEN_HERE") {
+    if (!API_TOKEN || API_TOKEN === "PASTE_NEW_API_TOKEN_HERE") {
       throw new Error("Bạn chưa điền API_TOKEN vào RAW locket_pb_req.js");
     }
     if (typeof $task !== "undefined" && $task.fetch) {
@@ -325,12 +325,23 @@
         const result = await workerFetch({ path: "/api/photobooth/capture", body: workerBody });
         const outputUrl = extractOutput(result);
         if (!outputUrl) throw new Error("Worker không trả outputUrl cho Photobooth");
-        const returnedSessionId = result.sessionId || (result.result && result.result.sessionId) || sessionId;
+        const workerData = (result && result.result && typeof result.result === "object")
+          ? result.result : (result || {});
+        const returnedSessionId = workerData.sessionId || result.sessionId || sessionId;
+        const photoCount = Number(workerData.photoCount || result.photoCount || state.photoCount || 4);
+        if (![1, 2, 3, 4].includes(photoCount)) {
+          throw new Error("Worker trả photoCount không hợp lệ: " + photoCount);
+        }
+        const completed = (typeof workerData.completed === "boolean")
+          ? workerData.completed
+          : ((typeof result.completed === "boolean") ? result.completed : step >= photoCount);
+        const nextStep = Number(workerData.nextStep || result.nextStep || (completed ? 1 : step + 1));
 
-        if (step < 4) {
+        if (!completed && nextStep >= 1 && nextStep <= photoCount) {
           writeStore(PB_STATE_KEY, JSON.stringify({
             sessionId: returnedSessionId,
-            step: step + 1,
+            step: nextStep,
+            photoCount: photoCount,
             frameId: frameId,
             photoboothId: originalId,
             updatedAt: now
@@ -339,7 +350,9 @@
           writeStore(PB_STATE_KEY, "");
         }
         return doneWithUrl(outputUrl, {
-          mode: "photobooth", frameId: frameId, step: step, completed: step === 4,
+          mode: "photobooth", frameId: frameId, step: step,
+          photoCount: photoCount, completed: completed,
+          nextStep: completed ? 1 : nextStep,
           sessionId: returnedSessionId
         });
       }
