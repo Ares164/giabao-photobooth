@@ -1,9 +1,10 @@
 // Locket Worker integration: AI Filter + progressive 4-shot Photobooth
-// Shadowrocket HTTP-request script for /generateFilteredImage
+// Shadowrocket HTTP-request script for /generateFilteredImage.
+// Pairs with locket_pb_res.js, which normalizes the Worker JSON response.
 // IMPORTANT: replace the placeholder below with the API_TOKEN secret value from Cloudflare.
 (function () {
   const WORKER_HOST = "https://locketsever.lehuynhgiabao71.workers.dev";
-  const API_TOKEN = "LHGBNAT2011";
+  const API_TOKEN = "aGT3b1UFYgpXGL3LJJ3WGOhBS71X+SEa27KbJyBFw+w=";
   const DEFAULT_FRAME_ID = "summer-1";
   const PB_STATE_KEY = "LOCKET_PB_SESSION_V3";
 
@@ -220,12 +221,18 @@
     return value;
   }
   function getFilterId(body) {
-    // Locket sends data.filter_id as the selected filter identity and data.prompt
-    // as a separate prompt key. Never use prompt as a substitute for filter_id.
-    return getNestedValue(body, [
+    // Prefer explicit Locket filter/sticker fields. `id` is only a fallback
+    // when its value is a known sticker or Photobooth identifier.
+    const explicit = getNestedValue(body, [
       "stickerId", "sticker_id", "filterId", "filter_id", "filterType", "filter_type",
-      "effectId", "effect_id", "templateId", "template_id", "id"
+      "effectId", "effect_id", "templateId", "template_id"
     ], 0).toLowerCase();
+    if (explicit) return explicit;
+    const fallback = getNestedValue(body, ["id"], 0).toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, fallback) || isPhotobooth(fallback)) {
+      return fallback;
+    }
+    return "";
   }
   function normaliseFilter(id) {
     // Only canonical Locket sticker IDs are accepted by the AI route.
@@ -251,45 +258,51 @@
     const candidate = getNestedValue(body, ["frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"], 0).toLowerCase();
     return !!candidate && !candidate.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(candidate);
   }
-  function workerFetch(payload) {
+  const PENDING_PREFIX = "LOCKET_WORKER_PENDING_V1_";
+  const PENDING_LATEST_KEY = "LOCKET_WORKER_PENDING_LATEST_V1";
+
+  function makeTraceId() {
+    return (Date.now().toString(36) + Math.random().toString(36).slice(2, 12))
+      .replace(/[^a-z0-9]/gi, "");
+  }
+
+  function forwardToWorker(path, workerBody, pendingMeta) {
     if (!API_TOKEN || API_TOKEN === "PASTE_NEW_API_TOKEN_HERE") {
-      throw new Error("Bạn chưa điền API_TOKEN vào RAW locket_pb_req.js");
-    }
-    if (typeof $task !== "undefined" && $task.fetch) {
-      return $task.fetch({
-        url: WORKER_HOST + payload.path,
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Token": API_TOKEN
-        },
-        body: JSON.stringify(payload.body)
-      }).then(response => {
-        const status = response.statusCode || response.status || 0;
-        if (status < 200 || status >= 300) throw new Error("Worker HTTP " + status + ": " + response.body);
-        return parseBody(response.body);
+      return $done({
+        response: {
+          status: 502,
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({ success: false, error: "API_TOKEN_NOT_CONFIGURED" })
+        }
       });
     }
-    return new Promise((resolve, reject) => {
-      if (typeof $httpClient === "undefined") return reject(new Error("HTTP client không khả dụng"));
-      $httpClient.post({
-        url: WORKER_HOST + payload.path,
-        headers: { "Content-Type": "application/json", "X-API-Token": API_TOKEN },
-        body: JSON.stringify(payload.body)
-      }, (error, response, data) => {
-        if (error) return reject(error);
-        const status = response && (response.status || response.statusCode);
-        if (status < 200 || status >= 300) return reject(new Error("Worker HTTP " + status + ": " + data));
-        resolve(parseBody(data));
-      });
+
+    const traceId = makeTraceId();
+    pendingMeta = pendingMeta || {};
+    pendingMeta.traceId = traceId;
+    pendingMeta.createdAt = Date.now();
+    writeStore(PENDING_PREFIX + traceId, JSON.stringify(pendingMeta));
+    writeStore(PENDING_LATEST_KEY, traceId);
+
+    return $done({
+      url: WORKER_HOST + path,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-API-Token": API_TOKEN,
+        "X-Locket-Trace": traceId
+      },
+      body: JSON.stringify(workerBody)
     });
   }
+
   function extractOutput(payload) {
     return (payload && payload.result && (payload.result.outputUrl || payload.result.output_url || payload.result.url)) ||
       (payload && (payload.outputUrl || payload.output_url || payload.url)) || "";
   }
 
-  (async function main() {
+  (function main() {
     try {
       if (typeof $request === "undefined") return $done({});
       const body = parseBody($request.body);
@@ -300,88 +313,63 @@
 
       if (!imageUrl) return $done({});
 
-      // PHOTObooth branch is checked first and never calls AI.
+      // PHOTObOOTH is handled before AI and never enters /api/ai-edit.
       if (isPhotobooth(originalId) || hasExplicitPhotoboothFrame(body)) {
         let state = {};
         try { state = JSON.parse(readStore(PB_STATE_KEY) || "{}"); } catch (_) { state = {}; }
         const now = Date.now();
-        // Worker session TTL is 15 minutes; reset local progress after the same interval.
         if (!state.updatedAt || now - Number(state.updatedAt) > 15 * 60 * 1000) state = {};
+
         let step = Number(state.step || 1);
         let sessionId = String(state.sessionId || "");
         const selectedFrameId = getPhotoboothFrameId(body, originalId);
-        // Prefer a frame explicitly selected in this Locket request. If this
-        // capture omits frame metadata, continue the current session's frame.
         const frameId = selectedFrameId || state.frameId || DEFAULT_FRAME_ID;
-        // A real frame change resets the four-shot session before capture.
+
+        // A newly selected frame starts a fresh four-capture Worker session.
         if (selectedFrameId && state.frameId && state.frameId !== selectedFrameId) {
           step = 1;
           sessionId = "";
         }
-        if (step < 1 || step > 4) { step = 1; sessionId = ""; }
+        if (step < 1 || step > 4) {
+          step = 1;
+          sessionId = "";
+        }
 
         const workerBody = { step: step, frameId: frameId, imageUrl: imageUrl };
         if (sessionId) workerBody.sessionId = sessionId;
-        const result = await workerFetch({ path: "/api/photobooth/capture", body: workerBody });
-        const outputUrl = extractOutput(result);
-        if (!outputUrl) throw new Error("Worker không trả outputUrl cho Photobooth");
-        const workerData = (result && result.result && typeof result.result === "object")
-          ? result.result : (result || {});
-        const returnedSessionId = workerData.sessionId || result.sessionId || sessionId;
-        const photoCount = Number(workerData.photoCount || result.photoCount || state.photoCount || 4);
-        if (![1, 2, 3, 4].includes(photoCount)) {
-          throw new Error("Worker trả photoCount không hợp lệ: " + photoCount);
-        }
-        const completed = (typeof workerData.completed === "boolean")
-          ? workerData.completed
-          : ((typeof result.completed === "boolean") ? result.completed : step >= photoCount);
-        const nextStep = Number(workerData.nextStep || result.nextStep || (completed ? 1 : step + 1));
 
-        if (!completed && nextStep >= 1 && nextStep <= photoCount) {
-          writeStore(PB_STATE_KEY, JSON.stringify({
-            sessionId: returnedSessionId,
-            step: nextStep,
-            photoCount: photoCount,
-            frameId: frameId,
-            photoboothId: originalId,
-            updatedAt: now
-          }));
-        } else {
-          writeStore(PB_STATE_KEY, "");
-        }
-        return doneWithUrl(outputUrl, {
-          mode: "photobooth", frameId: frameId, step: step,
-          photoCount: photoCount, completed: completed,
-          nextStep: completed ? 1 : nextStep,
-          sessionId: returnedSessionId
+        return forwardToWorker("/api/photobooth/capture", workerBody, {
+          kind: "photobooth",
+          step: step,
+          frameId: frameId,
+          photoboothId: originalId,
+          previousSessionId: sessionId
         });
       }
 
-      // Only explicitly declared canonical stk_* IDs may enter the AI route.
-      if (!originalId.startsWith("stk_") || !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, originalId)) {
+      // Only canonical stk_* identifiers declared in the original map enter AI.
+      if (
+        !originalId.startsWith("stk_") ||
+        !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, originalId)
+      ) {
         return $done({});
       }
+
       const prompt = AI_PROMPTS[originalId] || AI_PROMPTS[filterId];
-      if (!filterId || !prompt) return $done({});
+      if (!filterId || !prompt || !String(prompt).trim()) return $done({});
 
-      const result = await workerFetch({
-        path: "/api/ai-edit",
-        body: {
-          imageUrl: imageUrl,
-          prompt: prompt,
-          stickerId: originalId,
-          filterId: filterId,
-          filterType: filterId
-        }
+      return forwardToWorker("/api/ai-edit", {
+        imageUrl: imageUrl,
+        prompt: prompt,
+        stickerId: originalId,
+        filterId: filterId,
+        filterType: filterId
+      }, {
+        kind: "ai",
+        stickerId: originalId,
+        filterId: filterId
       });
-      const outputUrl = extractOutput(result);
-      if (!outputUrl) throw new Error("Worker không trả outputUrl cho AI Filter");
-      return doneWithUrl(outputUrl, { mode: "ai", stickerId: originalId, filterId: filterId });
-
-      // Unknown filter: let Locket process it normally; do not fake a success response.
-      return $done({});
     } catch (error) {
-      // Surface a real error instead of silently returning the unedited original photo.
       return $done({
         response: {
           status: 502,
