@@ -82,8 +82,16 @@
     if (typeof $response === "undefined") return $done({});
 
     const requestHeaders = (typeof $request !== "undefined" && $request.headers) || {};
-    let traceId = getHeader(requestHeaders, "X-Locket-Trace");
-    if (!traceId) traceId = readStore(PENDING_LATEST_KEY);
+  // Chỉ xử lý phản hồi có mã trace chính xác.
+const traceId = getHeader(requestHeaders, "X-Locket-Trace");
+
+// Không có trace thì giữ nguyên phản hồi gốc.
+if (!traceId) return $done({});
+
+const pendingRaw = readStore(PENDING_PREFIX + traceId);
+
+// Không có pending tương ứng thì không can thiệp.
+if (!pendingRaw) return $done({});
 
     const pendingRaw = traceId ? readStore(PENDING_PREFIX + traceId) : "";
     if (!pendingRaw) return $done({});
