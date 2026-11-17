@@ -303,6 +303,7 @@
   }
 
   (function main() {
+	  $notify("LOCKET DEBUG", "Request RAW", "SCRIPT ĐÃ CHẠY");
     try {
       if (typeof $request === "undefined") return $done({});
       const body = parseBody($request.body);
