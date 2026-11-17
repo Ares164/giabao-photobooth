@@ -302,10 +302,11 @@
       (payload && (payload.outputUrl || payload.output_url || payload.url)) || "";
   }
 
+  
   (function main() {
-	  $notification.post("LOCKET DEBUG", "Request RAW", "SCRIPT ĐÃ CHẠY");
     try {
       if (typeof $request === "undefined") return $done({});
+
       const body = parseBody($request.body);
       const rawBody = $request.body || "";
       const imageUrl = getImageUrl(body, rawBody);
@@ -314,29 +315,41 @@
 
       if (!imageUrl) return $done({});
 
-      // PHOTObOOTH is handled before AI and never enters /api/ai-edit.
+      // Photobooth: chuyển sang Worker xử lý 4 ảnh.
       if (isPhotobooth(originalId) || hasExplicitPhotoboothFrame(body)) {
         let state = {};
-        try { state = JSON.parse(readStore(PB_STATE_KEY) || "{}"); } catch (_) { state = {}; }
+        try {
+          state = JSON.parse(readStore(PB_STATE_KEY) || "{}");
+        } catch (_) {
+          state = {};
+        }
+
         const now = Date.now();
-        if (!state.updatedAt || now - Number(state.updatedAt) > 15 * 60 * 1000) state = {};
+        if (!state.updatedAt || now - Number(state.updatedAt) > 15 * 60 * 1000) {
+          state = {};
+        }
 
         let step = Number(state.step || 1);
         let sessionId = String(state.sessionId || "");
         const selectedFrameId = getPhotoboothFrameId(body, originalId);
         const frameId = selectedFrameId || state.frameId || DEFAULT_FRAME_ID;
 
-        // A newly selected frame starts a fresh four-capture Worker session.
         if (selectedFrameId && state.frameId && state.frameId !== selectedFrameId) {
           step = 1;
           sessionId = "";
         }
+
         if (step < 1 || step > 4) {
           step = 1;
           sessionId = "";
         }
 
-        const workerBody = { step: step, frameId: frameId, imageUrl: imageUrl };
+        const workerBody = {
+          step: step,
+          frameId: frameId,
+          imageUrl: imageUrl
+        };
+
         if (sessionId) workerBody.sessionId = sessionId;
 
         return forwardToWorker("/api/photobooth/capture", workerBody, {
@@ -348,7 +361,7 @@
         });
       }
 
-      // Only canonical stk_* identifiers declared in the original map enter AI.
+      // AI Filter: chỉ nhận sticker ID hợp lệ.
       if (
         !originalId.startsWith("stk_") ||
         !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, originalId)
@@ -357,7 +370,10 @@
       }
 
       const prompt = AI_PROMPTS[originalId] || AI_PROMPTS[filterId];
-      if (!filterId || !prompt || !String(prompt).trim()) return $done({});
+
+      if (!filterId || !prompt || !String(prompt).trim()) {
+        return $done({});
+      }
 
       return forwardToWorker("/api/ai-edit", {
         imageUrl: imageUrl,
@@ -370,12 +386,18 @@
         stickerId: originalId,
         filterId: filterId
       });
+
     } catch (error) {
       return $done({
         response: {
           status: 502,
-          headers: { "Content-Type": "application/json; charset=utf-8" },
-          body: JSON.stringify({ success: false, error: String(error && error.message || error) })
+          headers: {
+            "Content-Type": "application/json; charset=utf-8"
+          },
+          body: JSON.stringify({
+            success: false,
+            error: String(error && error.message || error)
+          })
         }
       });
     }
