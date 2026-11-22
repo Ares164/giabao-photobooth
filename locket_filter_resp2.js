@@ -1,5 +1,6 @@
 // Locket Worker Response RAW — FIXED VERSION
 // AI Filter + Photobooth 4-Shot
+// Giữ cơ chế bảo vệ phản hồi gốc của Locket.
 (function () {
   "use strict";
 
@@ -9,16 +10,23 @@
 
   function readStore(key) {
     try {
-      if (typeof $persistentStore !== "undefined") return $persistentStore.read(key) || "";
-      if (typeof $prefs !== "undefined") return $prefs.valueForKey(key) || "";
+      if (typeof $persistentStore !== "undefined") {
+        return $persistentStore.read(key) || "";
+      }
+      if (typeof $prefs !== "undefined") {
+        return $prefs.valueForKey(key) || "";
+      }
     } catch (_) {}
     return "";
   }
 
   function writeStore(key, value) {
     try {
-      if (typeof $persistentStore !== "undefined") $persistentStore.write(String(value), key);
-      else if (typeof $prefs !== "undefined") $prefs.setValueForKey(String(value), key);
+      if (typeof $persistentStore !== "undefined") {
+        $persistentStore.write(String(value), key);
+      } else if (typeof $prefs !== "undefined") {
+        $prefs.setValueForKey(String(value), key);
+      }
     } catch (_) {}
   }
 
@@ -36,15 +44,21 @@
     if (!headers || typeof headers !== "object") return "";
     const target = String(wanted).toLowerCase();
     for (const key of Object.keys(headers)) {
-      if (String(key).toLowerCase() === target) return String(headers[key] || "");
+      if (String(key).toLowerCase() === target) {
+        return String(headers[key] || "");
+      }
     }
     return "";
   }
 
   function clearPending(traceId) {
-    if (traceId) writeStore(PENDING_PREFIX + traceId, "");
+    if (traceId) {
+      writeStore(PENDING_PREFIX + traceId, "");
+    }
     const latest = readStore(PENDING_LATEST_KEY);
-    if (!traceId || latest === traceId) writeStore(PENDING_LATEST_KEY, "");
+    if (!traceId || latest === traceId) {
+      writeStore(PENDING_LATEST_KEY, "");
+    }
   }
 
   function response(status, payload) {
@@ -63,15 +77,29 @@
       payload && payload.result && typeof payload.result === "object"
         ? payload.result
         : {};
+    const nestedData =
+      result && result.data && typeof result.data === "object"
+        ? result.data
+        : {};
+
     return (
       result.outputUrl ||
       result.output_url ||
       result.url ||
       result.imageUrl ||
       result.image_url ||
-      payload.outputUrl ||
-      payload.output_url ||
-      payload.url ||
+      nestedData.outputUrl ||
+      nestedData.output_url ||
+      nestedData.url ||
+      nestedData.imageUrl ||
+      nestedData.image_url ||
+      (payload && (
+        payload.outputUrl ||
+        payload.output_url ||
+        payload.url ||
+        payload.imageUrl ||
+        payload.image_url
+      )) ||
       ""
     );
   }
@@ -84,10 +112,17 @@
       imageUrl: outputUrl,
       image_url: outputUrl
     };
-    const result = Object.assign({}, urls, {
-      status: 200,
-      data: Object.assign({}, urls)
-    }, extra || {});
+
+    const result = Object.assign(
+      {},
+      urls,
+      {
+        status: 200,
+        data: Object.assign({}, urls)
+      },
+      extra || {}
+    );
+
     return {
       success: true,
       result: result
@@ -95,21 +130,36 @@
   }
 
   try {
-    if (typeof $response === "undefined") return $done({});
+    if (typeof $response === "undefined") {
+      return $done({});
+    }
 
     const workerPayload = parseBody($response.body);
-    const requestHeaders = (typeof $request !== "undefined" && $request.headers) || {};
+    const requestHeaders =
+      (typeof $request !== "undefined" && $request.headers) || {};
+
+    // ==========================================
+    // FRIENDS RESPONSE PROTECTION
+    // Giữ nguyên phản hồi gốc nếu không thuộc Worker.
+    // ==========================================
     const traceId =
       getHeader(requestHeaders, "X-Locket-Trace") ||
       (workerPayload && workerPayload.result && workerPayload.result.traceId) ||
       (workerPayload && workerPayload.traceId) ||
       readStore(PENDING_LATEST_KEY);
 
-    if (!traceId) return $done({});
+    if (!traceId) {
+      return $done({});
+    }
 
     const pendingRaw = readStore(PENDING_PREFIX + traceId);
-    if (!pendingRaw) return $done({});
+    if (!pendingRaw) {
+      return $done({});
+    }
 
+    // ==========================================
+    // PENDING VALIDATION
+    // ==========================================
     let pending;
     try {
       pending = JSON.parse(pendingRaw);
@@ -119,22 +169,41 @@
 
     if (!pending || !pending.kind) {
       clearPending(traceId);
-      return response(502, { success: false, error: "PENDING_CONTEXT_INVALID" });
-    }
-
-    const status = Number($response.status || $response.statusCode || 200);
-    if (status < 200 || status >= 300 || workerPayload.success === false) {
-      clearPending(traceId);
-      return response(status >= 400 ? status : 502, {
+      return response(502, {
         success: false,
-        error: workerPayload.error || workerPayload.message || ("WORKER_HTTP_" + status)
+        error: "PENDING_CONTEXT_INVALID"
       });
     }
 
+    const status = Number(
+      $response.status || $response.statusCode || 200
+    );
+
+    if (
+      status < 200 ||
+      status >= 300 ||
+      workerPayload.success === false
+    ) {
+      clearPending(traceId);
+      return response(status >= 400 ? status : 502, {
+        success: false,
+        error:
+          workerPayload.error ||
+          workerPayload.message ||
+          ("WORKER_HTTP_" + status)
+      });
+    }
+
+    // ==========================================
+    // OUTPUT URL
+    // ==========================================
     const outputUrl = getOutputUrl(workerPayload);
     if (!outputUrl || !/^https?:\/\//i.test(outputUrl)) {
       clearPending(traceId);
-      return response(502, { success: false, error: "WORKER_OUTPUT_URL_MISSING_OR_INVALID" });
+      return response(502, {
+        success: false,
+        error: "WORKER_OUTPUT_URL_MISSING_OR_INVALID"
+      });
     }
 
     const workerResult =
@@ -143,34 +212,55 @@
         : {};
     const top = workerPayload;
 
+    // ==========================================
+    // PHOTOBOOTH 4 SHOTS
+    // ==========================================
     if (pending.kind === "photobooth") {
-      const step = Number(pending.step || workerResult.step || top.step || 1);
-      const sessionId = workerResult.sessionId || top.sessionId || pending.previousSessionId || "";
+      const step = Number(
+        pending.step || workerResult.step || top.step || 1
+      );
+
+      const sessionId =
+        workerResult.sessionId ||
+        workerResult.session_id ||
+        top.sessionId ||
+        top.session_id ||
+        pending.previousSessionId ||
+        "";
+
       const completed =
         typeof workerResult.completed === "boolean"
           ? workerResult.completed
           : typeof top.completed === "boolean"
             ? top.completed
             : step >= 4;
-      const nextStep = Number(workerResult.nextStep || top.nextStep || (completed ? 1 : step + 1));
 
-      if (!completed && nextStep >= 1 && nextStep <= 4 && sessionId) {
-        writeStore(
-          PB_STATE_KEY,
-          JSON.stringify({
-            sessionId: sessionId,
-            step: nextStep,
-            photoCount: 4,
-            frameId: pending.frameId || "summer-1",
-            photoboothId: pending.photoboothId || "",
-            updatedAt: Date.now()
-          })
-        );
-      } else {
-        writeStore(PB_STATE_KEY, "");
+      const nextStep = Number(
+        workerResult.nextStep ||
+        top.nextStep ||
+        (completed ? 1 : step + 1)
+      );
+
+      if (!pending.handledInReq) {
+        if (!completed && nextStep >= 1 && nextStep <= 4 && sessionId) {
+          writeStore(
+            PB_STATE_KEY,
+            JSON.stringify({
+              sessionId: sessionId,
+              step: nextStep,
+              photoCount: 4,
+              frameId: pending.frameId || "summer-1",
+              photoboothId: pending.photoboothId || "",
+              updatedAt: Date.now()
+            })
+          );
+        } else {
+          writeStore(PB_STATE_KEY, "");
+        }
       }
 
       clearPending(traceId);
+
       return response(
         200,
         makeLocketResponse(outputUrl, {
@@ -186,8 +276,12 @@
       );
     }
 
+    // ==========================================
+    // AI FILTER
+    // ==========================================
     if (pending.kind === "ai") {
       clearPending(traceId);
+
       return response(
         200,
         makeLocketResponse(outputUrl, {
@@ -198,12 +292,17 @@
       );
     }
 
+    // ==========================================
+    // UNKNOWN REQUEST
+    // ==========================================
     clearPending(traceId);
     return $done({});
   } catch (error) {
     return response(502, {
       success: false,
-      error: String(error && error.message ? error.message : error)
+      error: String(
+        error && error.message ? error.message : error
+      )
     });
   }
 })();
