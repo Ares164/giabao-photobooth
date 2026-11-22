@@ -1,7 +1,7 @@
 // Locket Worker integration: AI Filter + progressive 4-shot Photobooth
 // Shadowrocket HTTP-request script for /generateFilteredImage
 (function () {
-  const WORKER_HOST = "[https://locketsever.lehuynhgiabao71.workers.dev](https://locketsever.lehuynhgiabao71.workers.dev)";
+  const WORKER_HOST = "https://locketsever.lehuynhgiabao71.workers.dev";
   const API_TOKEN = "nguyenanhthu25102009";
   const DEFAULT_FRAME_ID = "summer-1";
   const PB_STATE_KEY = "LOCKET_PB_SESSION_V3";
@@ -116,7 +116,7 @@
     "beard": "Show the persons in the photo with the exact same pose and background, but with a full, full-length beard added to the face, captured with a modern iPhone camera look.\n\nGenerate a dense, natural beard that covers the cheeks, jawline, chin, and connects to the mustache, extending to a full length appropriate to the subject's proportions (ranging from medium-full to longer, but not exaggerated beyond realism). The beard should match the subject's existing hair color exactly, including undertones, and reflect their natural hair type (straight, wavy, or curly). Ensure consistent density variation, with slightly lighter growth on the upper cheeks and fuller density along the jaw and chin.\n\nThe beard should grow from the natural follicle pattern of the face, following realistic growth directions and contours. Include subtle variation in strand thickness, length, and color for realism, along with natural tapering at the edges. The mustache should integrate seamlessly with the beard, resting naturally over the upper lip without obscuring it excessively unless consistent with realistic growth.\n\nEnsure the beard conforms to the face without altering facial structure, jaw size, or head proportions. Maintain the exact silhouette of the face aside from the added hair volume. Add soft shadows within the beard and where it meets the skin to create depth, and include subtle highlights where light hits the hair.\n\nPreserve skin texture at the edges and beneath thinner areas of the beard. Ensure lighting, color, and depth match the original scene so the beard appears naturally present.\n\nApply modern iPhone camera characteristics across the entire image: natural HDR, crisp detail, balanced highlights and shadows, and true-to-life but slightly vibrant colors.\n\nDo not alter the subject's face, expression, identity, or pose. Keep the background, framing, depth of field, and image quality exactly the same, with the beard appearing as if it were naturally grown. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
     "slimed": "Show the persons in the photo with the exact same pose and background, but with thick green Nickelodeon-style slime being poured and splashing throughout the scene, captured with a modern iPhone camera look.\n\nAdd viscous, glossy green slime cascading from above, interacting naturally with gravity and the subject’s position. The slime should have a semi-translucent, gel-like consistency with varying thickness, forming drips, strands, and splashes as it makes contact with the subject and nearby surfaces. Allow the slime to accumulate realistically on horizontal surfaces such as shoulders, head, and any visible objects, with uneven pooling and slow drips forming.\n\nEnsure the slime conforms tightly to the subject where it touches, wrapping over contours of the face, hair, and clothing without altering underlying structure. Include small splatter droplets suspended mid-air at different depths, with some slightly motion-blurred to convey movement.\n\nLighting should interact strongly with the slime’s glossy surface, producing bright specular highlights and subtle internal scattering, while still matching the scene’s original light direction and intensity. Shadows should deepen slightly beneath thicker accumulations.\n\nApply modern iPhone camera characteristics across the entire image: natural HDR, crisp subject detail, slightly enhanced contrast, and true-to-life but subtly vibrant greens that remain believable. The slime should inherit the same processing so it feels captured in-camera.\n\nDo not alter the person’s face, expression, identity, or pose. Keep the background, framing, depth of field, and image quality exactly the same, with the slime appearing as a natural, in-camera event. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
     "cowboy_cowgirl": "Show the persons in the photo with the exact same pose and background, but with subjects dressed in Western attire appropriate to each person, captured with a modern iPhone camera look.\n\nIf a person is a woman, replace that person's clothing with cowgirl-style clothing made from white cowhide with natural brown spots. The outfit should include a cowhide cowgirl hat with the same white-and-brown spotted pattern, a fitted cowhide vest or jacket, and coordinating Western-style clothing that fits naturally to the body. The cowhide texture should show realistic hair-on-hide patterning with slight irregularity in the brown patches. The hat should sit naturally on the head without altering the hairline or head shape.\n\nIf a person is a man, replace that person's clothing with classic cowboy attire. Include a traditional brown cowboy hat made from felt or leather, worn naturally on the head. Pair it with Western-style clothing such as a button-up shirt, cowboy jacket or vest, and appropriate Western textures. The hat should follow the head's shape and lighting realistically.\n\nApply the appropriate styling independently to each person in the photo based on that person's gender presentation. Do not combine multiple looks onto the same person.\n\nEnsure all clothing materials respond to the scene's lighting with natural highlights, shadows, and texture. Cowhide surfaces should have subtle directional texture and pattern variation, while hats and fabrics should show realistic folds and structure consistent with the subject's pose.\n\nApply modern iPhone camera characteristics across the entire image: natural HDR, crisp detail, balanced highlights and shadows, and true-to-life but slightly vibrant colors so the clothing appears captured in-camera.\n\nDo not alter the subjects' faces, expressions, identities, or head proportions. Keep the background, pose, framing, depth of field, and image quality exactly the same. Do not create a split-screen, collage, side-by-side layout, duplicated frame, or any multi-panel composition. The result must remain a single continuous photo. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
-    "clown": "Show the persons in the photo with the exact same pose and background, but styled as clowns, captured with a modern iPhone camera look.\n\nAdd a multicolored clown wig composed of bright, fluffy curls in colors such as red, blue, yellow, and green. The wig should appear soft and voluminous with natural curl variation. It should sit naturally on the head without changing the underlying head shape or hairline.\n\nPlace a classic round clown nose on the subject’s nose. The nose should be bright red with a slightly matte rubber texture and soft specular highlights consistent with the scene’s lighting. It should fit naturally over the nose with a faint contact shadow where it meets the skin.\n\nReplace the subject’s clothing with a clown costume featuring bright, playful colors and soft fabric textures. The costume can include bold multicolored panels, oversized buttons, and loose-fitting sleeves or ruffles. The fabric should drape naturally with realistic folds and movement based on the subject’s posture.\n\nEnsure the wig, nose, and costume all interact realistically with the lighting and environment, with proper highlights, shadows, and depth.\n\nApply modern iPhone camera characteristics across the entire image: natural HDR, crisp detail, balanced highlights and shadows, and slightly vibrant but realistic colors so the costume appears captured in-camera.\n\nDo not alter the subject’s face, expression, identity, or pose. Keep the background, framing, depth of field, and image quality exactly the same. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
+    "clown": "Show the persons in the photo with the exact same pose and background, but styled as clowns, captured with a modern iPhone camera look.\n\nAdd a multicolored clown wig composed of bright, fluffy curls in colors such as red, blue, yellow, and green. The wig should appear soft and voluminous with natural curl variation. It should sit naturally on the head without changing the underlying head shape or hairline.\n\nPlace a classic round clown nose on the subject’s nose. The nose should be bright red with a slightly matte rubber texture and soft specular highlights consistent with the scene’s lighting. It should fit naturally over the nose with a faint contact shadow where it meets the skin.\n\nReplace the subject’s clothing with a clown costume featuring bright, playful colors and soft fabric textures. The costume can include bold multicolored panels, oversized buttons, and loose-fitting sleeves or ruffles. The fabric should drape naturally with realistic folds and movement based on the subject’s posture.\n\nEnsure the wig, nose, and costume all interact realistically with the lighting and environment, with proper highlights, shadows, and depth.\n\nApply modern iPhone camera characteristics across the entire image: natural HDR, crisp detail, balanced highlights and shadows, and slightly vibrant but realistic colors so the costume appears captured in-camera.\n\nDo not alter the subject’s face, expression, identity, pose, or background. Keep the framing, depth of field, and image quality exactly the same. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
     "tatted": "Show the persons in the photo with the exact same pose and background, but with face tattoos applied, captured with a modern iPhone camera look.\n\nAdd a forehead tattoo that reads \"Locket\" in an Old English / blackletter-style font. The text should be centered horizontally across the forehead, following the natural curvature of the skin. The lettering should be dark (black or very dark ink), with sharp edges, slight ink spread, and subtle skin absorption so it appears embedded in the skin rather than overlaid. Maintain slight distortion based on the curvature of the forehead and facial expression.\n\nOn the subject's right cheek (viewer's left if facing forward), place a small heart tattoo in the position where a teardrop tattoo would typically sit, just below the outer corner of the eye. The heart should be simple, clean-lined, and filled or slightly shaded, with natural ink softness at the edges.\n\nEnsure both tattoos integrate realistically with the skin, preserving pores, texture, and underlying highlights and shadows. The tattoos should not appear overly crisp or floating, and should follow the lighting of the scene with subtle fading where light hits more strongly.\n\nDo not alter the subject's face shape, expression, identity, or proportions. Keep the background, pose, framing, depth of field, and image quality exactly the same.\n\nApply modern iPhone camera characteristics across the entire image: natural HDR, crisp detail, balanced highlights and shadows, and true-to-life but slightly vibrant colors, so the tattoos appear naturally captured in-camera. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
     "bye_brows": "Show the persons in the photo with the exact same pose and background, but with only the eyebrow hair removed.\n\nRemove all visible eyebrow hair strictly within the natural eyebrow region, without altering any surrounding areas. The shape, size, and silhouette of the head must remain exactly the same. Do not modify or remove any hair on the scalp, hairline, eyelashes, or facial hair outside of the eyebrows.\n\nPreserve the natural brow ridge and skin beneath, showing realistic skin texture with fine pores and subtle tonal variation where the eyebrows were. Avoid overly smooth or blurred skin. Include very faint follicle shading or slight discoloration to maintain realism, but no visible hairs.\n\nEnsure lighting, shadows, and color match the original image exactly, with no new shading that would imply structural changes. Do not alter facial proportions, expression, or identity in any way.\n\nKeep the background, pose, framing, depth of field, and image quality identical to the original, with the only change being the absence of eyebrow hair. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
     "bowling_ball": "Show the persons in the photo with the exact same pose and background, but with a completely bald head.\n\nRemove all scalp hair while strictly preserving the original head shape, size, and silhouette. Do not expand, round, or alter the contour of the skull in any way. The hairline should be cleanly removed, revealing the natural scalp beneath, with the same proportions as the original head.\n\nThe scalp should appear smooth and clean with realistic skin texture, including fine pores and subtle tonal variation. Add a gentle, natural sheen to the scalp, with soft specular highlights that follow the lighting direction of the scene, giving a slightly shiny appearance without looking wet or overly reflective. Ensure highlights fall naturally along the curvature of the head and do not introduce artificial brightness.\n\nMaintain accurate shadowing around the head and where hair previously cast subtle shadows, adjusting only as needed to reflect the absence of hair while keeping the overall lighting consistent.\n\nDo not alter the person’s face, expression, or identity. Do not modify eyebrows, eyelashes, or any other facial hair unless already absent. Keep the background, pose, framing, depth of field, and image quality exactly the same, with the bald head appearing as if it were originally captured. Do not change the overall compsition of the photo, do not add new people to the photo, only show each person in the photo one time.",
@@ -156,6 +156,15 @@
     "frame_berry_days", "frame_happy_snap", "frame_sky_diary"
   ];
 
+  const FRAME_ALIAS_MAP = {
+    "photobooth_summer": "summer-1",
+    "summer_1": "summer-1",
+    "pb_strawberry": "frame-berry-days",
+    "frame_berry_days": "frame-berry-days",
+    "frame_happy_snap": "frame-happy-snap",
+    "frame_sky_diary": "frame-sky-diary"
+  };
+
   function readStore(key) {
     try {
       if (typeof $persistentStore !== "undefined") return $persistentStore.read(key) || "";
@@ -182,13 +191,16 @@
   }
 
   function doneWithUrl(url, extra) {
-    const result = Object.assign({
+    const urls = {
       outputUrl: url,
       output_url: url,
       url: url,
       imageUrl: url,
-      image_url: url,
-      status: 200
+      image_url: url
+    };
+    const result = Object.assign({}, urls, {
+      status: 200,
+      data: Object.assign({}, urls)
     }, extra || {});
     return $done({
       response: {
@@ -247,24 +259,72 @@
     ], 0).toLowerCase();
   }
 
+  function stripStickerPrefix(id) {
+    return String(id || "").trim().toLowerCase().replace(/^stk_/, "");
+  }
+
   function normaliseFilter(id) {
     if (!id || !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, id)) return "";
     return STICKER_ID_MAP[id];
   }
 
   function isPhotobooth(id) {
-    const value = String(id || "").trim().toLowerCase();
-    return PHOTOBOOTH_MODE_IDS.indexOf(value) !== -1 || PHOTOBOOTH_FRAME_IDS.indexOf(value) !== -1;
+    const raw = String(id || "").trim().toLowerCase();
+    if (!raw) return false;
+    const clean = stripStickerPrefix(raw);
+    const hyphen = clean.replace(/_/g, "-");
+
+    if (
+      PHOTOBOOTH_MODE_IDS.indexOf(raw) !== -1 ||
+      PHOTOBOOTH_MODE_IDS.indexOf(clean) !== -1 ||
+      PHOTOBOOTH_FRAME_IDS.indexOf(raw) !== -1 ||
+      PHOTOBOOTH_FRAME_IDS.indexOf(clean) !== -1 ||
+      PHOTOBOOTH_FRAME_IDS.indexOf(hyphen) !== -1
+    ) {
+      return true;
+    }
+
+    return (
+      clean.startsWith("photobooth") ||
+      clean.startsWith("pb_") ||
+      clean.startsWith("frame_") ||
+      clean.startsWith("frame-")
+    );
+  }
+
+  function resolveFrameCandidate(candidate) {
+    const clean = stripStickerPrefix(candidate);
+    if (!clean || !/^[a-z0-9_.-]{2,100}$/.test(clean)) return "";
+    if (PHOTOBOOTH_FRAME_IDS.indexOf(clean) !== -1) return clean;
+    const hyphen = clean.replace(/_/g, "-");
+    if (PHOTOBOOTH_FRAME_IDS.indexOf(hyphen) !== -1) return hyphen;
+    if (Object.prototype.hasOwnProperty.call(FRAME_ALIAS_MAP, clean)) return FRAME_ALIAS_MAP[clean];
+    return clean;
   }
 
   function getPhotoboothFrameId(body, detectedId) {
     const explicit = getNestedValue(body, [
       "frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"
     ], 0).toLowerCase();
-    if (explicit && !explicit.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(explicit)) return explicit;
+    if (explicit) {
+      const resolved = resolveFrameCandidate(explicit);
+      if (resolved) return resolved;
+    }
+
     const template = getNestedValue(body, ["templateId", "template_id"], 0).toLowerCase();
-    if (template && !template.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(template)) return template;
-    if (PHOTOBOOTH_FRAME_IDS.indexOf(detectedId) !== -1) return detectedId;
+    if (template && !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, template)) {
+      const resolved = resolveFrameCandidate(template);
+      if (resolved && PHOTOBOOTH_MODE_IDS.indexOf(resolved) === -1) return resolved;
+    }
+
+    const cleanDetected = stripStickerPrefix(detectedId);
+    const hyphenDetected = cleanDetected.replace(/_/g, "-");
+    if (PHOTOBOOTH_FRAME_IDS.indexOf(cleanDetected) !== -1) return cleanDetected;
+    if (PHOTOBOOTH_FRAME_IDS.indexOf(hyphenDetected) !== -1) return hyphenDetected;
+    if (Object.prototype.hasOwnProperty.call(FRAME_ALIAS_MAP, cleanDetected)) {
+      return FRAME_ALIAS_MAP[cleanDetected];
+    }
+
     return DEFAULT_FRAME_ID;
   }
 
@@ -272,7 +332,8 @@
     const candidate = getNestedValue(body, [
       "frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"
     ], 0).toLowerCase();
-    return !!candidate && !candidate.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(candidate);
+    const clean = stripStickerPrefix(candidate);
+    return !!clean && /^[a-z0-9_.-]{2,100}$/.test(clean);
   }
 
   function workerFetch(payload, traceId) {
@@ -328,11 +389,21 @@
   function extractOutput(payload) {
     return (payload && payload.result && (
       payload.result.outputUrl || payload.result.output_url || payload.result.url ||
-      payload.result.imageUrl || payload.result.image_url
+      payload.result.imageUrl || payload.result.image_url ||
+      (payload.result.data && (payload.result.data.outputUrl || payload.result.data.url))
     )) || (payload && (
       payload.outputUrl || payload.output_url || payload.url ||
       payload.imageUrl || payload.image_url
     )) || "";
+  }
+
+  function extractSessionId(payload, fallback) {
+    return (payload && payload.result && (
+      payload.result.sessionId || payload.result.session_id ||
+      (payload.result.data && (payload.result.data.sessionId || payload.result.data.session_id))
+    )) || (payload && (
+      payload.sessionId || payload.session_id
+    )) || fallback || "";
   }
 
   (async function main() {
@@ -347,37 +418,65 @@
 
       if (!imageUrl) return $done({});
 
+      // 1. LUỒNG PHOTOBOOTH (4 SHOTS)
       if (isPhotobooth(originalId) || hasExplicitPhotoboothFrame(body)) {
         let state = {};
         try { state = JSON.parse(readStore(PB_STATE_KEY) || "{}"); } catch (_) { state = {}; }
         const now = Date.now();
         if (!state.updatedAt || now - Number(state.updatedAt) > SESSION_TTL_MS) state = {};
+
         let step = Number(state.step || 1);
         let sessionId = String(state.sessionId || "");
         const selectedFrameId = getPhotoboothFrameId(body, originalId);
-        const frameId = state.frameId || selectedFrameId || DEFAULT_FRAME_ID;
-        if (state.frameId && state.frameId !== selectedFrameId) { step = 1; sessionId = ""; }
-        if (step < 1 || step > 4) { step = 1; sessionId = ""; }
+        const frameId = selectedFrameId || state.frameId || DEFAULT_FRAME_ID;
+
+        if (state.frameId && selectedFrameId && state.frameId !== selectedFrameId) {
+          step = 1;
+          sessionId = "";
+        }
+        if (step < 1 || step > 4) {
+          step = 1;
+          sessionId = "";
+        }
 
         savePending(traceId, {
           kind: "photobooth",
           step: step,
           frameId: frameId,
           photoboothId: originalId,
-          previousSessionId: sessionId
+          previousSessionId: sessionId,
+          handledInReq: true
         });
 
-        const workerBody = { step: step, frameId: frameId, imageUrl: imageUrl, traceId: traceId };
+        const workerBody = {
+          step: step,
+          frameId: frameId,
+          imageUrl: imageUrl,
+          stickerId: originalId,
+          photoboothId: stripStickerPrefix(originalId),
+          traceId: traceId
+        };
         if (sessionId) workerBody.sessionId = sessionId;
+
         const result = await workerFetch({ path: "/api/photobooth/capture", body: workerBody }, traceId);
         const outputUrl = extractOutput(result);
         if (!outputUrl) throw new Error("Worker không trả outputUrl cho Photobooth");
-        const returnedSessionId = result.sessionId || (result.result && result.result.sessionId) || sessionId;
 
-        if (step < 4) {
+        const returnedSessionId = extractSessionId(result, sessionId);
+        const workerRes = (result && result.result) || {};
+        const completed =
+          typeof workerRes.completed === "boolean"
+            ? workerRes.completed
+            : typeof result.completed === "boolean"
+              ? result.completed
+              : step >= 4;
+        const nextStep = Number(workerRes.nextStep || result.nextStep || (completed ? 1 : step + 1));
+
+        if (!completed && nextStep >= 1 && nextStep <= 4) {
           writeStore(PB_STATE_KEY, JSON.stringify({
             sessionId: returnedSessionId,
-            step: step + 1,
+            step: nextStep,
+            photoCount: 4,
             frameId: frameId,
             photoboothId: originalId,
             updatedAt: now
@@ -385,16 +484,20 @@
         } else {
           writeStore(PB_STATE_KEY, "");
         }
+
         return doneWithUrl(outputUrl, {
           mode: "photobooth",
           frameId: frameId,
           step: step,
-          completed: step === 4,
+          photoCount: 4,
+          completed: completed,
+          nextStep: completed ? 1 : nextStep,
           sessionId: returnedSessionId,
           traceId: traceId
         });
       }
 
+      // 2. LUỒNG AI FILTER
       if (
         !originalId.startsWith("stk_") ||
         !Object.prototype.hasOwnProperty.call(STICKER_ID_MAP, originalId)
@@ -408,7 +511,8 @@
       savePending(traceId, {
         kind: "ai",
         stickerId: originalId,
-        filterId: filterId
+        filterId: filterId,
+        handledInReq: true
       });
 
       const result = await workerFetch({
