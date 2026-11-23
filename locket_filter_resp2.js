@@ -3,7 +3,7 @@
 (function () {
   "use strict";
 
-  const WORKER_HOST = "loketsever.lehuynhgiabao71.workers.dev";
+  const WORKER_HOST = "locketsever.lehuynhgiabao71.workers.dev";
   const PB_STATE_KEY = "LOCKET_PB_SESSION_V3";
   const PENDING_PREFIX = "LOCKET_WORKER_PENDING_V1_";
   const PENDING_LATEST_KEY = "LOCKET_WORKER_PENDING_LATEST_V1";
