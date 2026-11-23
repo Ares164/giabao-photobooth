@@ -153,14 +153,20 @@
   ];
 
   // Frame IDs are separate from sticker IDs. They must match the IDs uploaded to Worker KV.
+  // Exactly the 11 Photobooth frame IDs currently published by the app.
+  // Keep this list synchronized with the frame records in Remote Config.
   const PHOTOBOOTH_FRAME_IDS = [
-    // 11 frame IDs currently published by the Locket Remote Config script.
-    "frame_anh_dao", "frame_galaxy", "frame_coki", "frame_sweet",
-    "frame_milk", "frame_mery_christmas", "summer-1", "summer-2",
-    "frame_thu", "frame_flower", "frame_happy_luna_new_year",
-    // Legacy IDs retained for backward compatibility with older configs.
-    "frame-berry-days", "frame-happy-snap", "frame-sky-diary",
-    "frame_berry_days", "frame_happy_snap", "frame_sky_diary"
+    "frame_anh_dao",
+  "frame_galaxy",
+  "frame_coki",
+  "frame_sweet",
+  "frame_milk",
+  "frame_mery_christmas",
+  "frame_happy_luna_new_year",
+  "summer-1",
+  "summer-2",
+  "frame_thu",
+  "frame_flower"
   ];
 
   function readStore(key) {
@@ -245,18 +251,20 @@
   }
   function getPhotoboothFrameId(body, detectedId) {
     const explicit = getNestedValue(body, ["frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"], 0).toLowerCase();
-    if (explicit && !explicit.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(explicit)) return explicit;
-    // Some clients place the selected frame in templateId. Never treat a sticker ID as a frame.
+    if (PHOTOBOOTH_FRAME_IDS.indexOf(explicit) !== -1) return explicit;
+
+    // Some clients place the selected frame in templateId.
     const template = getNestedValue(body, ["templateId", "template_id"], 0).toLowerCase();
-    if (template && !template.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(template)) return template;
+    if (PHOTOBOOTH_FRAME_IDS.indexOf(template) !== -1) return template;
+
     if (PHOTOBOOTH_FRAME_IDS.indexOf(detectedId) !== -1) return detectedId;
-    // Empty means this request did not specify a frame; the active session may
-    // continue using its previously selected frame.
+    // Empty means no published frame was specified; the active session may continue.
     return "";
   }
   function hasExplicitPhotoboothFrame(body) {
-    const candidate = getNestedValue(body, ["frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"], 0).toLowerCase();
-    return !!candidate && !candidate.startsWith("stk_") && /^[a-z0-9_.-]{2,100}$/.test(candidate);
+    const explicit = getNestedValue(body, ["frameId", "frame_id", "photoboothFrameId", "photobooth_frame_id", "frameTemplateId", "frame_template_id"], 0).toLowerCase();
+    const template = getNestedValue(body, ["templateId", "template_id"], 0).toLowerCase();
+    return PHOTOBOOTH_FRAME_IDS.indexOf(explicit) !== -1 || PHOTOBOOTH_FRAME_IDS.indexOf(template) !== -1;
   }
   const PENDING_PREFIX = "LOCKET_WORKER_PENDING_V1_";
   const PENDING_LATEST_KEY = "LOCKET_WORKER_PENDING_LATEST_V1";
